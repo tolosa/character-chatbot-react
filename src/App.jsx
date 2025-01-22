@@ -1,4 +1,5 @@
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { ChatBot } from "./components/ChatBot";
 
 const theme = createTheme({
   palette: {
@@ -12,7 +13,7 @@ const theme = createTheme({
 const App = () => (
   <ThemeProvider theme={theme} noSsr>
     <CssBaseline />
-    <p>TODO: add content</p>
+    <ChatBot />
   </ThemeProvider>
 );
 
