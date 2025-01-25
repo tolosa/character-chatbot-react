@@ -92,10 +92,10 @@ const ChatBot = () => {
         variant="outlined"
         fullWidth
         value={userInput}
-        onChange={(e) => setUserInput(e.target.value)}
         disabled={isLoading}
+        onChange={(e) => setUserInput(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSend()}
       />
-
       <Button
         variant="contained"
         color="primary"
