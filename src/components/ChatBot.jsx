@@ -1,98 +1,35 @@
 import { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { chatStream } from "../lib/chatStream";
 
 const ChatBot = () => {
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState("Who are you?");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log("env", import.meta.env);
-
-  const callOpenAIStreaming = async () => {
+  const handleSend = async () => {
     if (!userInput.trim()) return;
-
     setIsLoading(true);
 
     const updatedMessages = [...messages, { role: "user", content: userInput }];
-
     setMessages(updatedMessages);
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
     try {
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_OPENAI_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "gpt-4o-mini",
-            messages: updatedMessages,
-            stream: true,
-          }),
-        }
-      );
-
-      if (!response.body) {
-        console.error("Streaming not supported");
-        setIsLoading(false);
-        return;
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let assistantResponse = "";
-
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "" }, // Temporary placeholder for streaming response
-      ]);
-
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-
-        if (value) {
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("\n").filter((line) => line.trim() !== "");
-
-          lines.forEach((line) => {
-            if (line === "data: [DONE]") {
-              done = true;
-              return;
-            }
-
-            if (line.startsWith("data: ")) {
-              try {
-                const json = JSON.parse(line.substring(6)); // Parse JSON after "data: "
-                const token = json.choices?.[0]?.delta?.content;
-
-                if (token) {
-                  assistantResponse += token;
-
-                  // Update the most recent assistant message dynamically
-                  setMessages((prev) =>
-                    prev.map((message, index) =>
-                      index === prev.length - 1
-                        ? { ...message, content: assistantResponse }
-                        : message
-                    )
-                  );
-                }
-              } catch (err) {
-                console.error("Failed to parse JSON:", err);
-              }
-            }
-          });
-        }
-      }
+      await chatStream(updatedMessages, (token) => {
+        setMessages((prev) =>
+          prev.map((message, index) =>
+            index === prev.length - 1
+              ? { ...message, content: message.content + token }
+              : message
+          )
+        );
+      });
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error while calling OpenAI:", error);
     } finally {
       setIsLoading(false);
-      setUserInput(""); // Clear the input field
+      setUserInput("");
     }
   };
 
@@ -162,7 +99,7 @@ const ChatBot = () => {
       <Button
         variant="contained"
         color="primary"
-        onClick={callOpenAIStreaming}
+        onClick={handleSend}
         disabled={isLoading || !userInput.trim()}
       >
         {isLoading ? "Loading..." : "Send"}
