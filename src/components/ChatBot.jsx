@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { chatStream } from "../lib/chatStream";
+import { UserInput } from "./UserInput";
 
 const ChatBot = () => {
   const [userInput, setUserInput] = useState("Who are you?");
@@ -87,23 +88,12 @@ const ChatBot = () => {
         )}
       </Box>
 
-      <TextField
-        label="Type your message"
-        variant="outlined"
-        fullWidth
-        value={userInput}
-        disabled={isLoading}
-        onChange={(e) => setUserInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSend()}
+      <UserInput
+        inputValue={userInput}
+        isLoading={isLoading}
+        onInputChange={setUserInput}
+        onSendMessage={handleSend}
       />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSend}
-        disabled={isLoading || !userInput.trim()}
-      >
-        {isLoading ? "Loading..." : "Send"}
-      </Button>
     </Box>
   );
 };
