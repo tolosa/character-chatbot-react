@@ -3,7 +3,6 @@ export const chatStream = async (messages, onToken) => {
     return await createMockTokens(onToken);
 
   const openaiKey = import.meta.env.VITE_OPENAI_KEY;
-  console.log("openaiKey", openaiKey);
   if (!openaiKey)
     throw new Error(
       "OpenAI key not found. Please set VITE_OPENAI_KEY in your .env file"
@@ -23,15 +22,12 @@ export const chatStream = async (messages, onToken) => {
       }),
     });
 
-    if (!response.ok) {
+    if (!response.ok)
       throw new Error(`OpenAI API responded with status ${response.status}`);
-    }
 
-    if (!response.body) {
+    if (!response.body)
       throw new Error("ReadableStream not yet supported in this browser.");
-    }
 
-    // Read the response as a stream
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let done = false;
@@ -41,29 +37,20 @@ export const chatStream = async (messages, onToken) => {
       done = readerDone;
 
       if (value) {
-        // Decode the chunk into text
         const chunk = decoder.decode(value, { stream: true });
-        // Split by new line and remove empty lines
         const lines = chunk.split("\n").filter((line) => line.trim() !== "");
 
         for (const line of lines) {
           if (line === "data: [DONE]") {
-            // End of stream
             done = true;
             break;
           }
 
           if (line.startsWith("data: ")) {
             try {
-              // Parse the JSON after "data: "
               const json = JSON.parse(line.substring(6));
-              // Extract the streamed content token
               const token = json.choices?.[0]?.delta?.content;
-
-              if (token) {
-                // Invoke the callback with each token
-                onToken(token);
-              }
+              if (token) onToken(token);
             } catch (err) {
               console.error("Failed to parse JSON:", err);
             }
@@ -73,7 +60,7 @@ export const chatStream = async (messages, onToken) => {
     }
   } catch (error) {
     console.error("Error in OpenAI streaming:", error);
-    throw error; // re-throw to handle it in the caller
+    throw error;
   }
 };
 
