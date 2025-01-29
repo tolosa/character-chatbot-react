@@ -2,12 +2,19 @@ export const chatStream = async (messages, onToken) => {
   if (import.meta.env.VITE_MOCK_RESPONSE == "true")
     return await createMockTokens(onToken);
 
+  const openaiKey = import.meta.env.VITE_OPENAI_KEY;
+  console.log("openaiKey", openaiKey);
+  if (!openaiKey)
+    throw new Error(
+      "OpenAI key not found. Please set VITE_OPENAI_KEY in your .env file"
+    );
+
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_OPENAI_KEY}`,
+        Authorization: `Bearer ${openaiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
