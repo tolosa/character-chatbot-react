@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { AppBar, Box, Typography, Container } from "@mui/material";
 import { chatStream } from "../lib/chatStream";
 import { UserInput } from "./UserInput";
 
@@ -39,61 +39,68 @@ const ChatBot = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        gap: 2,
-        p: 3,
-        maxWidth: 600,
-        mx: "auto",
-        boxShadow: 3,
-        borderRadius: 2,
-        bgcolor: "background.paper",
+        height: "100vh",
       }}
     >
-      <Typography variant="h4" gutterBottom>
-        OpenAI Chat
-      </Typography>
-
-      <Box
+      <AppBar position="relative">
+        <Container
+          sx={{
+            maxWidth: "lg",
+            mx: "auto",
+            display: "flex",
+            alignItems: "center",
+            py: 1.5,
+          }}
+        >
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+            Anime chatbot
+          </Typography>
+        </Container>
+      </AppBar>
+      <Box sx={{ flexGrow: 1, py: 2, overflowY: "scroll" }}>
+        <Container
+          sx={{
+            maxWidth: "lg",
+            mx: "auto",
+          }}
+        >
+          {messages.map((message, index) => (
+            <Typography
+              key={index}
+              variant="body1"
+              sx={{
+                whiteSpace: "pre-wrap",
+                textAlign: message.role === "user" ? "right" : "left",
+                color:
+                  message.role === "user" ? "primary.main" : "text.primary",
+                mt: 1,
+              }}
+            >
+              <strong>{message.role === "user" ? "You:" : "Assistant:"}</strong>{" "}
+              {message.content}
+            </Typography>
+          ))}
+          {isLoading && (
+            <Typography variant="body1" sx={{ mt: 1, color: "text.secondary" }}>
+              Assistant is typing...
+            </Typography>
+          )}
+        </Container>
+      </Box>
+      <Container
         sx={{
-          width: "100%",
-          maxHeight: 300,
-          overflowY: "auto",
-          p: 2,
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 1,
-          bgcolor: "background.default",
+          maxWidth: "lg",
+          mx: "auto",
+          mb: 2,
         }}
       >
-        {messages.map((message, index) => (
-          <Typography
-            key={index}
-            variant="body1"
-            sx={{
-              whiteSpace: "pre-wrap",
-              textAlign: message.role === "user" ? "right" : "left",
-              color: message.role === "user" ? "primary.main" : "text.primary",
-              mt: 1,
-            }}
-          >
-            <strong>{message.role === "user" ? "You:" : "Assistant:"}</strong>{" "}
-            {message.content}
-          </Typography>
-        ))}
-
-        {isLoading && (
-          <Typography variant="body1" sx={{ mt: 1, color: "text.secondary" }}>
-            Assistant is typing...
-          </Typography>
-        )}
-      </Box>
-
-      <UserInput
-        inputValue={userInput}
-        isLoading={isLoading}
-        onInputChange={setUserInput}
-        onSendMessage={handleSend}
-      />
+        <UserInput
+          inputValue={userInput}
+          isLoading={isLoading}
+          onInputChange={setUserInput}
+          onSendMessage={handleSend}
+        />
+      </Container>
     </Box>
   );
 };
