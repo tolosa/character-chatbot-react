@@ -1,4 +1,9 @@
 export const chatStream = async (messages, onToken) => {
+  if (import.meta.env.VITE_MOCK_RESPONSE == "true") {
+    await createMockTokens(onToken);
+    return;
+  }
+
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -65,4 +70,18 @@ export const chatStream = async (messages, onToken) => {
     console.error("Error in OpenAI streaming:", error);
     throw error; // re-throw to handle it in the caller
   }
+};
+
+const lorem =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus ac libero.".split(
+    " "
+  );
+
+const createMockTokens = async (onToken) => {
+  let words = 0;
+  const interval = setInterval(() => {
+    const randomWord = lorem[Math.round(Math.random() * lorem.length)];
+    onToken(randomWord + " ");
+    if (words++ >= 50) clearInterval(interval);
+  }, 100);
 };
