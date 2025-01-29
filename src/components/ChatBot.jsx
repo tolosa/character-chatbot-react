@@ -3,9 +3,14 @@ import { AppBar, Box, Typography, Container } from "@mui/material";
 import { chatStream } from "../lib/chatStream";
 import { UserInput } from "./UserInput";
 
+const systemPrompt =
+  "Pretend to be Monkey D. Luffy, the protagonist of the One Piece anime and manga.";
+
 const ChatBot = () => {
   const [userInput, setUserInput] = useState("Who are you?");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { role: "developer", content: systemPrompt },
+  ]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = async () => {
