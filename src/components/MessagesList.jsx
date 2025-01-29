@@ -23,12 +23,12 @@ const MessagesList = ({ messages, isLoading }) =>
         </Typography>
       ) : (
         <>
-          <Avatar sx={{ mr: 1.5 }} />
+          <Avatar sx={{ mr: 1.5 }} src="/luffy-avatar.png" alt="Luffy" />
           <div>
             {message.content}
             {isLoading && index == messages.length - 1 && (
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Assistant is typing...
+                Luffy is typing...
               </Typography>
             )}
           </div>
