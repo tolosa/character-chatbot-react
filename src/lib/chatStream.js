@@ -1,8 +1,6 @@
 export const chatStream = async (messages, onToken) => {
-  if (import.meta.env.VITE_MOCK_RESPONSE == "true") {
-    await createMockTokens(onToken);
-    return;
-  }
+  if (import.meta.env.VITE_MOCK_RESPONSE == "true")
+    return await createMockTokens(onToken);
 
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -73,7 +71,7 @@ export const chatStream = async (messages, onToken) => {
 };
 
 const lorem =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus ac libero.".split(
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.".split(
     " "
   );
 
@@ -82,6 +80,6 @@ const createMockTokens = async (onToken) => {
   const interval = setInterval(() => {
     const randomWord = lorem[Math.round(Math.random() * lorem.length)];
     onToken(randomWord + " ");
-    if (words++ >= 50) clearInterval(interval);
-  }, 100);
+    if (words++ >= 60) clearInterval(interval);
+  }, 50);
 };
