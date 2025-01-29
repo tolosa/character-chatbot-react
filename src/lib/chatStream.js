@@ -69,11 +69,15 @@ const lorem =
     " "
   );
 
-const createMockTokens = async (onToken) => {
-  let words = 0;
-  const interval = setInterval(() => {
-    const randomWord = lorem[Math.round(Math.random() * lorem.length)];
-    onToken(randomWord + " ");
-    if (words++ >= 60) clearInterval(interval);
-  }, 50);
-};
+const createMockTokens = async (onToken) =>
+  new Promise((resolve) => {
+    let words = 0;
+    const interval = setInterval(() => {
+      const randomWord = lorem[Math.round(Math.random() * lorem.length)];
+      onToken(randomWord + " ");
+      if (words++ >= 60) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 50);
+  });
