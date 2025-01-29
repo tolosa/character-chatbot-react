@@ -2,15 +2,16 @@ import { useState } from "react";
 import { AppBar, Box, Typography, Container } from "@mui/material";
 import { chatStream } from "../lib/chatStream";
 import { UserInput } from "./UserInput";
+import { MessagesList } from "./MessagesList";
 
 const systemPrompt =
   "Pretend to be Monkey D. Luffy, the protagonist of the One Piece anime and manga.";
 
 const ChatBot = () => {
-  const [userInput, setUserInput] = useState("Who are you?");
   const [messages, setMessages] = useState([
     { role: "developer", content: systemPrompt },
   ]);
+  const [userInput, setUserInput] = useState("Who are you?");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = async () => {
@@ -38,6 +39,8 @@ const ChatBot = () => {
       setUserInput("");
     }
   };
+
+  const userMessages = messages.toSpliced(0, 1);
 
   return (
     <Box
@@ -69,27 +72,7 @@ const ChatBot = () => {
             mx: "auto",
           }}
         >
-          {messages.map((message, index) => (
-            <Typography
-              key={index}
-              variant="body1"
-              sx={{
-                whiteSpace: "pre-wrap",
-                textAlign: message.role === "user" ? "right" : "left",
-                color:
-                  message.role === "user" ? "primary.main" : "text.primary",
-                mt: 1,
-              }}
-            >
-              <strong>{message.role === "user" ? "You:" : "Assistant:"}</strong>{" "}
-              {message.content}
-            </Typography>
-          ))}
-          {isLoading && (
-            <Typography variant="body1" sx={{ mt: 1, color: "text.secondary" }}>
-              Assistant is typing...
-            </Typography>
-          )}
+          <MessagesList messages={userMessages} isLoading={isLoading} />
         </Container>
       </Box>
       <Container
