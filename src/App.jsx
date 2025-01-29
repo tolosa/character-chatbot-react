@@ -5,8 +5,11 @@ const theme = createTheme({
   palette: {
     mode: "dark",
     background: {
-      default: "#242424",
+      default: "#232323",
     },
+  },
+  typography: {
+    fontSize: 15.6,
   },
 });
 

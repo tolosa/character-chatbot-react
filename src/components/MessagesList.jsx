@@ -6,7 +6,6 @@ const MessagesList = ({ messages, isLoading }) =>
     <Typography
       key={index}
       sx={{
-        fontSize: "1.15rem",
         whiteSpace: "pre-wrap",
         display: "flex",
         flexDirection: message.role === "user" ? "row-reverse" : "row",
