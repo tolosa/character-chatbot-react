@@ -1,31 +1,41 @@
-import { Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 
-const MessagesList = ({ messages, isLoading }) => (
-  <>
-    {messages.map((message, index) => (
-      <Typography
-        key={index}
-        variant="body1"
-        sx={{
-          fontSize: "1.12rem",
-          whiteSpace: "pre-wrap",
-          textAlign: message.role === "user" ? "right" : "left",
-          color: message.role === "user" ? "primary.main" : "text.primary",
-          mt: 1,
-        }}
-      >
-        <strong>{message.role === "user" ? "You:" : "Assistant:"}</strong>{" "}
-        {message.content}
-      </Typography>
-    ))}
-    {isLoading && (
-      <Typography variant="body1" sx={{ mt: 1, color: "text.secondary" }}>
-        Assistant is typing...
-      </Typography>
-    )}
-  </>
-);
+const MessagesList = ({ messages, isLoading }) =>
+  messages.map((message, index) => (
+    <Typography
+      key={index}
+      sx={{
+        fontSize: "1.15rem",
+        whiteSpace: "pre-wrap",
+        display: "flex",
+        flexDirection: message.role === "user" ? "row-reverse" : "row",
+        mb: 1,
+      }}
+    >
+      {message.role == "user" ? (
+        <Typography
+          component="span"
+          variant="inherit"
+          sx={{ backgroundColor: "grey.800", borderRadius: 2, py: 1, px: 1.5 }}
+        >
+          {message.content}
+        </Typography>
+      ) : (
+        <>
+          <Avatar sx={{ mr: 1.5 }} />
+          <div>
+            {message.content}
+            {isLoading && index == messages.length - 1 && (
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                Assistant is typing...
+              </Typography>
+            )}
+          </div>
+        </>
+      )}
+    </Typography>
+  ));
 
 MessagesList.propTypes = {
   messages: PropTypes.arrayOf(
