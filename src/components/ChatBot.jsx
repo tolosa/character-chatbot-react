@@ -43,6 +43,11 @@ const ChatBot = () => {
 
   const userMessages = messages.toSpliced(0, 1);
 
+  const handleOnPromptClick = (prompt) => {
+    setUserInput(prompt);
+    handleSend(prompt);
+  };
+
   return (
     <Box
       sx={{
@@ -71,7 +76,7 @@ const ChatBot = () => {
           {userMessages.length ? (
             <MessagesList messages={userMessages} isLoading={isLoading} />
           ) : (
-            <Welcome onPromptClick={handleSend} />
+            <Welcome onPromptClick={handleOnPromptClick} />
           )}
         </Container>
       </Box>
