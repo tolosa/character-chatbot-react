@@ -15,11 +15,11 @@ const ChatBot = () => {
   const [userInput, setUserInput] = useState("Who are you?");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = async () => {
-    if (!userInput.trim()) return;
+  const handleSend = async (prompt = userInput) => {
+    if (!prompt.trim()) return;
     setIsLoading(true);
 
-    const updatedMessages = [...messages, { role: "user", content: userInput }];
+    const updatedMessages = [...messages, { role: "user", content: prompt }];
     setMessages(updatedMessages);
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
@@ -71,7 +71,7 @@ const ChatBot = () => {
           {userMessages.length ? (
             <MessagesList messages={userMessages} isLoading={isLoading} />
           ) : (
-            <Welcome />
+            <Welcome onPromptClick={handleSend} />
           )}
         </Container>
       </Box>
