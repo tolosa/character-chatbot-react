@@ -1,17 +1,10 @@
 import { useState } from "react";
-import {
-  AppBar,
-  Box,
-  Typography,
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { chatStream } from "../lib/chatStream";
 import { UserInput } from "./UserInput";
 import { MessagesList } from "./MessagesList";
 import { Welcome } from "./Welcome";
+import { Header } from "./Header";
 
 const systemPrompt =
   "Pretend to be Monkey D. Luffy, the protagonist of the One Piece anime and manga.";
@@ -68,28 +61,11 @@ const ChatBot = () => {
         height: "100vh",
       }}
     >
-      <AppBar position="relative">
-        <Container
-          sx={{
-            maxWidth: "lg",
-            mx: "auto",
-            display: "flex",
-            alignItems: "center",
-            py: 1.5,
-          }}
-        >
-          <Typography variant="h5" sx={{ flexGrow: 1 }}>
-            Anime Chatbot
-          </Typography>
-          {!!userMessages.length && (
-            <Tooltip title="New conversation">
-              <IconButton size="small" onClick={handleOnNewConversation}>
-                <Icon fontSize="small">maps_ugc</Icon>
-              </IconButton>
-            </Tooltip>
-          )}
-        </Container>
-      </AppBar>
+      <Header
+        onNewConversationClick={
+          !!userMessages.length && handleOnNewConversation
+        }
+      />
       <Box sx={{ flexGrow: 1, py: 2, overflowY: "scroll", display: "flex" }}>
         <Container sx={{ maxWidth: "lg", mx: "auto" }}>
           {userMessages.length ? (
