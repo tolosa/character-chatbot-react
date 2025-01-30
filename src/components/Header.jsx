@@ -20,6 +20,15 @@ const Header = ({ onNewConversationClick }) => (
           py: 1.5,
         }}
       >
+        <img
+          src="/luffy-avatar.png"
+          style={{
+            borderRadius: 9999,
+            height: "2.5rem",
+            marginRight: "0.4rem",
+            filter: "grayscale(100%) contrast(80%)",
+          }}
+        />
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
           Anime Chatbot
         </Typography>
