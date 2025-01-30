@@ -3,6 +3,7 @@ import { AppBar, Box, Typography, Container } from "@mui/material";
 import { chatStream } from "../lib/chatStream";
 import { UserInput } from "./UserInput";
 import { MessagesList } from "./MessagesList";
+import { Welcome } from "./Welcome";
 
 const systemPrompt =
   "Pretend to be Monkey D. Luffy, the protagonist of the One Piece anime and manga.";
@@ -61,18 +62,17 @@ const ChatBot = () => {
           }}
         >
           <Typography variant="h5" sx={{ flexGrow: 1 }}>
-            Anime chatbot
+            Anime Chatbot
           </Typography>
         </Container>
       </AppBar>
-      <Box sx={{ flexGrow: 1, py: 2, overflowY: "scroll" }}>
-        <Container
-          sx={{
-            maxWidth: "lg",
-            mx: "auto",
-          }}
-        >
-          <MessagesList messages={userMessages} isLoading={isLoading} />
+      <Box sx={{ flexGrow: 1, py: 2, overflowY: "scroll", display: "flex" }}>
+        <Container sx={{ maxWidth: "lg", mx: "auto" }}>
+          {userMessages.length ? (
+            <MessagesList messages={userMessages} isLoading={isLoading} />
+          ) : (
+            <Welcome />
+          )}
         </Container>
       </Box>
       <Container
