@@ -12,7 +12,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     { role: "developer", content: systemPrompt },
   ]);
-  const [userInput, setUserInput] = useState("Who are you?");
+  const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = async (prompt = userInput) => {

@@ -1,15 +1,16 @@
 import { TextField, IconButton, Icon } from "@mui/material";
+import PropTypes from "prop-types";
 
 const UserInput = ({ inputValue, isLoading, onInputChange, onSendMessage }) => {
   return (
     <>
       <TextField
-        label="Your message"
+        label="Ask Luffy"
         fullWidth
         value={inputValue}
         disabled={isLoading}
         onChange={(e) => onInputChange(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && onSendMessage(inputValue)}
+        onKeyDown={(e) => e.key == "Enter" && onSendMessage(inputValue)}
         slotProps={{
           input: {
             sx: { borderRadius: 3 },
@@ -27,6 +28,13 @@ const UserInput = ({ inputValue, isLoading, onInputChange, onSendMessage }) => {
       />
     </>
   );
+};
+
+UserInput.propTypes = {
+  inputValue: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  onInputChange: PropTypes.func.isRequired,
+  onSendMessage: PropTypes.func.isRequired,
 };
 
 export { UserInput };
