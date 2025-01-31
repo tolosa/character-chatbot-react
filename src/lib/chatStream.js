@@ -1,4 +1,50 @@
-export const chatStream = async (messages, onToken) => {
+import { useState } from "react";
+
+export const useChatbot = ({ systemPrompt }) => {
+  const initialMessages = [{ role: "developer", content: systemPrompt }];
+  const [messages, setMessages] = useState(initialMessages);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const sendMessage = async (prompt) => {
+    if (!prompt.trim()) return;
+    setIsLoading(true);
+
+    const updatedMessages = [
+      ...messages,
+      { role: "user", content: prompt },
+      { role: "assistant", content: "" },
+    ];
+    setMessages(updatedMessages);
+
+    try {
+      await chatStream(updatedMessages, (token) => {
+        setMessages((prev) => {
+          const last = prev.at(-1);
+          return prev.with(-1, {
+            ...last,
+            content: last.content + token,
+          });
+        });
+      });
+    } catch (error) {
+      console.error("Error while calling OpenAI:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const clear = () => setMessages(initialMessages);
+  const userMessages = messages.toSpliced(0, 1);
+
+  return {
+    messages: userMessages,
+    isLoading,
+    sendMessage,
+    clear,
+  };
+};
+
+const chatStream = async (messages, onToken) => {
   if (import.meta.env.VITE_MOCK_RESPONSE == "true")
     return await createMockTokens(onToken);
 

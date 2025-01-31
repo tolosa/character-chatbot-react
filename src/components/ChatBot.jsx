@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Container } from "@mui/material";
-import { chatStream } from "../lib/chatStream";
+import { useChatbot } from "../lib/chatStream";
 import { UserInput } from "./UserInput";
 import { MessagesList } from "./MessagesList";
 import { Welcome } from "./Welcome";
@@ -9,51 +9,19 @@ import { Header } from "./Header";
 const systemPrompt =
   "Pretend to be Monkey D. Luffy, the protagonist of the One Piece anime and manga.";
 
-const initialMessages = [{ role: "developer", content: systemPrompt }];
-
 const ChatBot = () => {
-  const [messages, setMessages] = useState(initialMessages);
   const [userInput, setUserInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { messages, isLoading, sendMessage, clear } = useChatbot({
+    systemPrompt,
+  });
 
-  const handleSend = async (prompt = userInput) => {
-    if (!prompt.trim()) return;
-    setIsLoading(true);
+  useEffect(() => {
+    if (!isLoading) setUserInput("");
+  }, [isLoading]);
 
-    const updatedMessages = [
-      ...messages,
-      { role: "user", content: prompt },
-      { role: "assistant", content: "" },
-    ];
-    setMessages(updatedMessages);
-
-    try {
-      await chatStream(updatedMessages, (token) => {
-        setMessages((prev) => {
-          const last = prev.at(-1);
-          return prev.with(-1, {
-            ...last,
-            content: last.content + token,
-          });
-        });
-      });
-    } catch (error) {
-      console.error("Error while calling OpenAI:", error);
-    } finally {
-      setIsLoading(false);
-      setUserInput("");
-    }
-  };
-
-  const userMessages = messages.toSpliced(0, 1);
-
-  const handleOnPromptClick = (prompt) => {
+  const handleOnPromptClick = async (prompt) => {
     setUserInput(prompt);
-    handleSend(prompt);
-  };
-
-  const handleOnNewConversation = () => {
-    setMessages(initialMessages);
+    sendMessage(prompt);
   };
 
   return (
@@ -64,15 +32,11 @@ const ChatBot = () => {
         height: "100vh",
       }}
     >
-      <Header
-        onNewConversationClick={
-          !!userMessages.length && handleOnNewConversation
-        }
-      />
+      <Header onNewConversationClick={!!messages.length && clear} />
       <Box sx={{ flexGrow: 1, overflowY: "scroll", display: "flex" }}>
         <Container sx={{ maxWidth: "lg", mx: "auto", py: 3 }}>
-          {userMessages.length ? (
-            <MessagesList messages={userMessages} isLoading={isLoading} />
+          {messages.length ? (
+            <MessagesList messages={messages} isLoading={isLoading} />
           ) : (
             <Welcome onPromptClick={handleOnPromptClick} />
           )}
@@ -89,7 +53,7 @@ const ChatBot = () => {
           inputValue={userInput}
           isLoading={isLoading}
           onInputChange={setUserInput}
-          onSendMessage={handleSend}
+          onSendMessage={sendMessage}
         />
       </Container>
     </Box>
