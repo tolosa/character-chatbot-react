@@ -20,19 +20,22 @@ const ChatBot = () => {
     if (!prompt.trim()) return;
     setIsLoading(true);
 
-    const updatedMessages = [...messages, { role: "user", content: prompt }];
+    const updatedMessages = [
+      ...messages,
+      { role: "user", content: prompt },
+      { role: "assistant", content: "" },
+    ];
     setMessages(updatedMessages);
-    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
     try {
       await chatStream(updatedMessages, (token) => {
-        setMessages((prev) =>
-          prev.map((message, index) =>
-            index === prev.length - 1
-              ? { ...message, content: message.content + token }
-              : message
-          )
-        );
+        setMessages((prev) => {
+          const last = prev.at(-1);
+          return prev.with(-1, {
+            ...last,
+            content: last.content + token,
+          });
+        });
       });
     } catch (error) {
       console.error("Error while calling OpenAI:", error);
