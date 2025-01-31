@@ -66,8 +66,8 @@ const ChatBot = () => {
           !!userMessages.length && handleOnNewConversation
         }
       />
-      <Box sx={{ flexGrow: 1, py: 2, overflowY: "scroll", display: "flex" }}>
-        <Container sx={{ maxWidth: "lg", mx: "auto" }}>
+      <Box sx={{ flexGrow: 1, overflowY: "scroll", display: "flex" }}>
+        <Container sx={{ maxWidth: "lg", mx: "auto", py: 3 }}>
           {userMessages.length ? (
             <MessagesList messages={userMessages} isLoading={isLoading} />
           ) : (
